@@ -80,6 +80,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 
 
     chown www-data:www-data -R tmp 
+    mkdir upload/surveys
     chown www-data:www-data -R upload 
     chown www-data:www-data -R application/config
 
