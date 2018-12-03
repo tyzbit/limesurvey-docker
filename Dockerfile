@@ -1,6 +1,8 @@
 FROM php:7-apache
 
 ENV DOWNLOAD_URL https://www.limesurvey.org/stable-release?download=2513:limesurvey3155%20181115targz
+ENV DOWNLOAD_SHA256 ee34369cecd5965b318ed7b2123fa1c66d166a83e89090bd99b7c98758fd22d6
+
 # install the PHP extensions we need
 RUN apt-get update && apt-get install -y libc-client-dev libfreetype6-dev libmcrypt-dev libpng-dev libjpeg-dev libldap2-dev zlib1g-dev libkrb5-dev libtidy-dev && rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/  --with-png-dir=/usr --with-jpeg-dir=/usr \
@@ -25,11 +27,12 @@ RUN { \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
-RUN set -x \
-	&& curl -SL "$DOWNLOAD_URL" -o /tmp/lime.tar.gz \
-    && tar xf /tmp/lime.tar.gz --strip-components=1 -C /var/www/html \ 
-    && rm /tmp/lime.tar.gz \
-    && chown -R www-data:www-data /var/www/html
+RUN set -x; \
+	curl -SL "$DOWNLOAD_URL" -o /tmp/lime.tar.gz; \
+    echo "$DOWNLOAD_SHA256 /tmp/lime.tar.gz" | sha256sum -c -; \
+    tar xf /tmp/lime.tar.gz --strip-components=1 -C /var/www/html; \ 
+    rm /tmp/lime.tar.gz; \
+    chown -R www-data:www-data /var/www/html
 
 #Set PHP defaults for Limesurvey (allow bigger uploads)
 RUN { \
