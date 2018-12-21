@@ -51,7 +51,16 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 
     if ! [ -e application/config/config.php ]; then
         echo >&2 "No config file in $(pwd) Copying default config file..."
-        cp application/config/config-sample-mysql.php application/config/config.php
+awk '/^\/\*.*End of file config.*\*\/$/ && c == 0 { c = 1; system("cat") } { print }' application/config/config-sample-mysql.php > application/config/config.php <<'EOPHP'
+define('MYSQL_SSL_CA', getenv('MYSQL_SSL_CA'));
+define('MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL | MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT);
+EOPHP
+    fi
+
+	# Install BaltimoreCyberTrustRoot.crt.pem
+	if [ ! -e BaltimoreCyberTrustRoot.crt.pem ]; then
+		echo "Downloading BaltimoreCyberTrustroot.crt.pem"
+		curl -o BaltimoreCyberTrustRoot.crt.pem -fsL "https://www.digicert.com/CACerts/BaltimoreCyberTrustRoot.crt.pem"
     fi
 
     # see http://stackoverflow.com/a/2705678/433558
