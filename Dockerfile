@@ -1,4 +1,4 @@
-FROM php:7-apache
+FROM php:7.1-apache
 
 ENV DOWNLOAD_URL https://www.limesurvey.org/stable-release?download=2513:limesurvey3155%20181115targz
 ENV DOWNLOAD_SHA256 ee34369cecd5965b318ed7b2123fa1c66d166a83e89090bd99b7c98758fd22d6
