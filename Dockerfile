@@ -4,7 +4,7 @@ ENV DOWNLOAD_URL https://www.limesurvey.org/stable-release?download=2513:limesur
 ENV DOWNLOAD_SHA256 ee34369cecd5965b318ed7b2123fa1c66d166a83e89090bd99b7c98758fd22d6
 
 # install the PHP extensions we need
-RUN apt-get update && apt-get install -y libc-client-dev libfreetype6-dev libmcrypt-dev libpng-dev libjpeg-dev libldap2-dev zlib1g-dev libkrb5-dev libtidy-dev && rm -rf /var/lib/apt/lists/* \
+RUN apt-get update && apt-get install -y libc-client-dev libfreetype6-dev libmcrypt-dev libpng-dev libjpeg-dev libldap2-dev zlib1g-dev libkrb5-dev libtidy-dev libzip-dev && rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/  --with-png-dir=/usr --with-jpeg-dir=/usr \
 	&& docker-php-ext-install gd mysqli pdo pdo_mysql opcache zip iconv tidy \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \ 
