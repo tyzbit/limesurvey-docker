@@ -1,0 +1,9 @@
+version: '3.3'
+
+services:
+  limesurvey:
+    image: acspri/limesurvey
+    volumes:
+     - ${WEBAPP_STORAGE_HOME}/site/plugins:/var/www/html/plugins
+     - ${WEBAPP_STORAGE_HOME}/site/upload:/var/www/html/plugins
+    restart: always
