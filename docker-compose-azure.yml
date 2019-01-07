@@ -5,7 +5,7 @@ services:
     image: acspri/limesurvey
     volumes:
      - ${WEBAPP_STORAGE_HOME}/site/plugins:/var/www/html/plugins
-     - ${WEBAPP_STORAGE_HOME}/site/upload:/var/www/html/plugins
+     - ${WEBAPP_STORAGE_HOME}/site/upload:/var/www/html/upload
     environment:
       LIMESURVEY_DB_PASSWORD: example
       LIMESURVEY_DB_HOST: mysql
