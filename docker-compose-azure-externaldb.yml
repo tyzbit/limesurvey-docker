@@ -7,17 +7,10 @@ services:
      - ${WEBAPP_STORAGE_HOME}/site/plugins:/var/www/html/plugins
      - ${WEBAPP_STORAGE_HOME}/site/upload:/var/www/html/upload
     environment:
-      LIMESURVEY_DB_PASSWORD: example
-      LIMESURVEY_DB_HOST: mysql
       LIMESURVEY_ADMIN_USER: admin
       LIMESURVEY_ADMIN_PASSWORD: password
       LIMESURVEY_ADMIN_NAME: Lime Administrator
       LIMESURVEY_ADMIN_EMAIL: lime@lime.lime
+      MYSQL_SSL_CA: /var/www/html/BaltimoreCyberTrustroot.crt.pem
       WEBSITES_ENABLE_APP_SERVICE_STORAGE: TRUE
-    restart: always
-
-  mysql:
-    image: mariadb
-    environment:
-      MYSQL_ROOT_PASSWORD: example
     restart: always
