@@ -54,7 +54,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
         echo >&2 "No config file in $(pwd) Copying default config file..."
 		#Copy default config file but also allow for the addition of attributes
 awk '/lime_/ && c == 0 { c = 1; system("cat") } { print }' application/config/config-sample-mysql.php > application/config/config.php <<'EOPHP'
-'attributes' => ''
+'attributes' => '',
 EOPHP
     fi
 
@@ -89,7 +89,7 @@ EOPHP
     set_config 'debugsql' "$LIMESURVEY_SQL_DEBUG"
 
 	if [ -n "$MYSQL_SSL_CA" ]; then
-		set_config 'attributes' "array(PDO::MYSQL_ATTR_SSL_CA => '$MYSQL_SSL_CA', PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false)"
+		set_config 'attributes' "array(PDO::MYSQL_ATTR_SSL_CA => '\/var\/www\/html\/$MYSQL_SSL_CA', PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false)"
     fi
 
     chown www-data:www-data -R tmp 
