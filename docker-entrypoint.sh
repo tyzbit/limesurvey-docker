@@ -32,6 +32,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     file_env 'LIMESURVEY_ADMIN_PASSWORD' ''
     file_env 'LIMESURVEY_DEBUG' '0'
     file_env 'LIMESURVEY_SQL_DEBUG' '0'
+    file_env 'MYSQL_SSL_CA' ''
 
 	# if we're linked to MySQL and thus have credentials already, let's use them
 	file_env 'LIMESURVEY_DB_USER' "${MYSQL_ENV_MYSQL_USER:-root}"
@@ -51,9 +52,9 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 
     if ! [ -e application/config/config.php ]; then
         echo >&2 "No config file in $(pwd) Copying default config file..."
-awk '/^\/\*.*End of file config.*\*\/$/ && c == 0 { c = 1; system("cat") } { print }' application/config/config-sample-mysql.php > application/config/config.php <<'EOPHP'
-define('MYSQL_SSL_CA', getenv('MYSQL_SSL_CA'));
-define('MYSQL_CLIENT_FLAGS', MYSQLI_CLIENT_SSL | MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT);
+		#Copy default config file but also allow for the addition of attributes
+awk '/lime_/ && c == 0 { c = 1; system("cat") } { print }' application/config/config-sample-mysql.php > application/config/config.php <<'EOPHP'
+'attributes' => ''
 EOPHP
     fi
 
@@ -87,6 +88,9 @@ EOPHP
     set_config 'debug' "$LIMESURVEY_DEBUG"
     set_config 'debugsql' "$LIMESURVEY_SQL_DEBUG"
 
+	if [ -n "$MYSQL_SSL_CA" ]; then
+		set_config 'attributes' "array(PDO::MYSQL_ATTR_SSL_CA => '$MYSQL_SSL_CA', PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false)"
+    fi
 
     chown www-data:www-data -R tmp 
     mkdir -p upload/surveys
