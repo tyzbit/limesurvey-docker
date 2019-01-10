@@ -33,6 +33,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     file_env 'LIMESURVEY_DEBUG' '0'
     file_env 'LIMESURVEY_SQL_DEBUG' '0'
     file_env 'MYSQL_SSL_CA' ''
+    file_env 'LIMESURVEY_USE_INNODB' ''
 
 	# if we're linked to MySQL and thus have credentials already, let's use them
 	file_env 'LIMESURVEY_DB_USER' "${MYSQL_ENV_MYSQL_USER:-root}"
@@ -77,7 +78,7 @@ EOPHP
     set_config() {
         key="$1"
         value="$2"
-        sed -i "/'$key'/s/>\([^,]*\),/>$value,/1"  application/config/config.php
+        sed -i "/'$key'/s/>\(.*\)/>$value,/1"  application/config/config.php
     }
 
     set_config 'connectionString' "'mysql:host=$LIMESURVEY_DB_HOST;port=3306;dbname=$LIMESURVEY_DB_NAME;'"
@@ -92,12 +93,18 @@ EOPHP
 		set_config 'attributes' "array(PDO::MYSQL_ATTR_SSL_CA => '\/var\/www\/html\/$MYSQL_SSL_CA', PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false)"
     fi
 
+	if [ -n "$LIMESURVEY_USE_INNODB" ]; then
+		#If you want to use INNODB - remove MyISAM specification from LimeSurvey code
+		sed -i "/ENGINE=MyISAM/s/\(ENGINE=MyISAM \)//1" application/core/db/MysqlSchema.php
+    fi
+
+
     chown www-data:www-data -R tmp 
     mkdir -p upload/surveys
     chown www-data:www-data -R upload 
     chown www-data:www-data -R application/config
 
-	DBSTATUS=$(TERM=dumb php -- "$LIMESURVEY_DB_HOST" "$LIMESURVEY_DB_USER" "$LIMESURVEY_DB_PASSWORD" "$LIMESURVEY_DB_NAME" "$LIMESURVEY_TABLE_PREFIX" <<'EOPHP'
+	DBSTATUS=$(TERM=dumb php -- "$LIMESURVEY_DB_HOST" "$LIMESURVEY_DB_USER" "$LIMESURVEY_DB_PASSWORD" "$LIMESURVEY_DB_NAME" "$LIMESURVEY_TABLE_PREFIX" "$MYSQL_SSL_CA" <<'EOPHP'
 <?php
 // database might not exist, so let's try creating it (just to be safe)
 
@@ -108,47 +115,52 @@ $stderr = fopen('php://stderr', 'w');
 list($host, $socket) = explode(':', $argv[1], 2);
 $port = 0;
 if (is_numeric($socket)) {
-	$port = (int) $socket;
-	$socket = null;
+        $port = (int) $socket;
+        $socket = null;
 }
 
 $maxTries = 10;
 do {
-	$mysql = new mysqli($host, $argv[2], $argv[3], '', $port, $socket);
-	if ($mysql->connect_error) {
-		fwrite($stderr, "\n" . 'MySQL Connection Error: (' . $mysql->connect_errno . ') ' . $mysql->connect_error . "\n");
-		--$maxTries;
-		if ($maxTries <= 0) {
-			exit(1);
-		}
-		sleep(3);
-	}
-} while ($mysql->connect_error);
+    $con = mysqli_init();
+    if (isset($argv[6]) && !empty($argv[6])) {
+	    mysqli_ssl_set($con,NULL,NULL,"/var/www/html/" . $argv[6],NULL,NULL);
+    }
+    $mysql = mysqli_real_connect($con,$host, $argv[2], $argv[3], '', $port, $socket, MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT);
+        if (!$mysql) {
+                fwrite($stderr, "\n" . 'MySQL Connection Error: (' . $mysql->connect_errno . ') ' . $mysql->connect_error . "\n");
+                --$maxTries;
+                if ($maxTries <= 0) {
+                        exit(1);
+                }
+                sleep(3);
+        }
+} while (!$mysql);
 
-if (!$mysql->query('CREATE DATABASE IF NOT EXISTS `' . $mysql->real_escape_string($argv[4]) . '`')) {
-	fwrite($stderr, "\n" . 'MySQL "CREATE DATABASE" Error: ' . $mysql->error . "\n");
-	$mysql->close();
-	exit(1);
+if (!$con->query('CREATE DATABASE IF NOT EXISTS `' . $con->real_escape_string($argv[4]) . '`')) {
+        fwrite($stderr, "\n" . 'MySQL "CREATE DATABASE" Error: ' . $con->error . "\n");
+        $con->close();
+        exit(1);
 }
 
-$mysql->select_db($mysql->real_escape_string($argv[4]));
+$con->select_db($con->real_escape_string($argv[4]));
 
-$inst = $mysql->query("SELECT * FROM `" . $mysql->real_escape_string($argv[5]) . "users" . "`");
+$inst = $con->query("SELECT * FROM `" . $con->real_escape_string($argv[5]) . "users" . "`");
 
-$mysql->close();
+$con->close();
 
 if ($inst->num_rows > 0) {
-	exit("DBEXISTS");
+        exit("DBEXISTS");
 } else {
-	exit(0);
+        exit(0);
 }
 
 EOPHP
 )
 
+
 	if [ "$DBSTATUS" != "DBEXISTS" ] &&  [ -n "$LIMESURVEY_ADMIN_USER" ] && [ -n "$LIMESURVEY_ADMIN_PASSWORD" ]; then
         echo >&2 'Database not yet populated - installing Limesurvey database'
-	    php application/commands/console.php install "$LIMESURVEY_ADMIN_USER" "$LIMESURVEY_ADMIN_PASSWORD" "$LIMESURVEY_ADMIN_NAME" "$LIMESURVEY_ADMIN_EMAIL"
+	    php application/commands/console.php install "$LIMESURVEY_ADMIN_USER" "$LIMESURVEY_ADMIN_PASSWORD" "$LIMESURVEY_ADMIN_NAME" "$LIMESURVEY_ADMIN_EMAIL" verbose
 	fi
 
 	if [ -n "$LIMESURVEY_ADMIN_USER" ] && [ -n "$LIMESURVEY_ADMIN_PASSWORD" ]; then
