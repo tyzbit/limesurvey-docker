@@ -13,4 +13,5 @@ services:
       LIMESURVEY_ADMIN_EMAIL: lime@lime.lime
       MYSQL_SSL_CA: BaltimoreCyberTrustroot.crt.pem
       WEBSITES_ENABLE_APP_SERVICE_STORAGE: TRUE
+      LIMESURVEY_USE_INNODB: 1
     restart: always
