@@ -1,7 +1,7 @@
 FROM php:7.2-apache
 
-ENV DOWNLOAD_URL https://www.limesurvey.org/stable-release?download=2518:limesurvey3156%20190108targz
-ENV DOWNLOAD_SHA256 c22a98c7b13fa8e6c212628adf9c7cfc7daa0e3d769221e521a5346392986333
+ENV DOWNLOAD_URL https://www.limesurvey.org/stable-release?download=2523:limesurvey3158%20190130targz
+ENV DOWNLOAD_SHA256 60bfc3aa09f5a4cc7144962bec56a0b8969348972bc16101239c3a4e327dd635
 
 # install the PHP extensions we need
 RUN apt-get update && apt-get install -y libc-client-dev libfreetype6-dev libmcrypt-dev libpng-dev libjpeg-dev libldap2-dev zlib1g-dev libkrb5-dev libtidy-dev libzip-dev && rm -rf /var/lib/apt/lists/* \
