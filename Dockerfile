@@ -1,7 +1,7 @@
 FROM php:7.2-apache
 
-ENV DOWNLOAD_URL https://www.limesurvey.org/stable-release?download=2540:limesurvey3170%20190402targz
-ENV DOWNLOAD_SHA256 5e03f9951f65825f206fd272c6c844d2682d8a753fd6b07d2ac9d4047045889e
+ENV DOWNLOAD_URL https://www.limesurvey.org/stable-release?download=2545:limesurvey3171%20190408targz
+ENV DOWNLOAD_SHA256 969a5a0e48db60e6443c31ba2d86087111ff3cfe8cf749ea2ce831d0b5c5c20e
 # install the PHP extensions we need
 RUN apt-get update && apt-get install -y libc-client-dev libfreetype6-dev libmcrypt-dev libpng-dev libjpeg-dev libldap2-dev zlib1g-dev libkrb5-dev libtidy-dev libzip-dev && rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/  --with-png-dir=/usr --with-jpeg-dir=/usr \
