@@ -1,7 +1,7 @@
 FROM php:7.2-apache
 
-ENV DOWNLOAD_URL https://www.limesurvey.org/stable-release?download=2637:limesurvey31713%20190824targz
-ENV DOWNLOAD_SHA256 42ff8158025ffdc4f706cbb330f19d4885da9cd5e3b35bc2fe1e1dd56d3d4533
+ENV DOWNLOAD_URL https://www.limesurvey.org/stable-release?download=2643:limesurvey31715%20190903targz
+ENV DOWNLOAD_SHA256 83331d4dc284a6e422f21437e0a73fdbbb9ae31520724ca171b9521c977674a6
 # install the PHP extensions we need
 RUN apt-get update && apt-get install -y libc-client-dev libfreetype6-dev libmcrypt-dev libpng-dev libjpeg-dev libldap2-dev zlib1g-dev libkrb5-dev libtidy-dev libzip-dev libsodium-dev && rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/  --with-png-dir=/usr --with-jpeg-dir=/usr \
@@ -30,7 +30,7 @@ RUN { \
 RUN set -x; \
 	curl -SL "$DOWNLOAD_URL" -o /tmp/lime.tar.gz; \
     echo "$DOWNLOAD_SHA256 /tmp/lime.tar.gz" | sha256sum -c -; \
-    tar xf /tmp/lime.tar.gz --strip-components=9 -C /var/www/html; \ 
+    tar xf /tmp/lime.tar.gz --strip-components=1 -C /var/www/html; \
     rm /tmp/lime.tar.gz; \
     chown -R www-data:www-data /var/www/html
 
