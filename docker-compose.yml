@@ -3,7 +3,8 @@ version: '2'
 services:
 
   limesurvey:
-    image: acspri/limesurvey:3.17.10
+    image: acspri/limesurvey:4.0.0-rc5
+    build: .
     ports:
       - 8082:80
     environment:
@@ -17,9 +18,3 @@ services:
     image: mariadb
     environment:
       MYSQL_ROOT_PASSWORD: example
-
-  mail:
-    image: djfarrelly/maildev
-    ports:
-      - "8081:80"
-
