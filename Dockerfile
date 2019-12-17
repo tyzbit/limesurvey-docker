@@ -1,15 +1,15 @@
 FROM php:7.2-apache
 
-ENV DOWNLOAD_URL https://www.limesurvey.org/development-release?download=2732:limesurvey400-rc11%20191209targz
-ENV DOWNLOAD_SHA256 c4f79e92a58b3aa8cc58c09f7a2af4296789e975a38804e9933506e9f3526120
+ENV DOWNLOAD_URL https://www.limesurvey.org/development-release?download=2747:limesurvey400-rc12%20191217targz
+ENV DOWNLOAD_SHA256 c372abc6b0f9b73b7ed8dff5e36bb7813bbe253e1fe8de77ff7727b3b5b07315
 
 # install the PHP extensions we need
 RUN apt-get update && apt-get install -y libc-client-dev libfreetype6-dev libmcrypt-dev libpng-dev libjpeg-dev libldap2-dev zlib1g-dev libkrb5-dev libtidy-dev libzip-dev libsodium-dev && rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/  --with-png-dir=/usr --with-jpeg-dir=/usr \
 	&& docker-php-ext-install gd mysqli pdo pdo_mysql opcache zip iconv tidy \
-    && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \ 
-    && docker-php-ext-install ldap \ 
-    && docker-php-ext-configure imap --with-imap-ssl --with-kerberos \ 
+    && docker-php-ext-configure ldap --with-libdir=lib/$(gcc -dumpmachine)/ \
+    && docker-php-ext-install ldap \
+    && docker-php-ext-configure imap --with-imap-ssl --with-kerberos \
     && docker-php-ext-install imap \
     && docker-php-ext-install sodium \
     && pecl install mcrypt-1.0.1 \
