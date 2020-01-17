@@ -31,11 +31,11 @@ RUN set -x; \
 	curl -SL "$DOWNLOAD_URL" -o /tmp/lime.zip; \
     cd /tmp; \
     unzip lime.zip; \
-    cd limesurvey; \
+    cd LimeSurvey; \
     cp -r . /var/www/html; \
     cd /tmp; \
     rm /tmp/lime.zip; \
-    rm -rf /tmp/limemesurvey; \
+    rm -rf /tmp/LimeSurvey; \
     chown -R www-data:www-data /var/www/html
 
 #Set PHP defaults for Limesurvey (allow bigger uploads)
