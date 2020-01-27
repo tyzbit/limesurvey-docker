@@ -12,7 +12,9 @@ RUN apt-get update && apt-get install -y unzip libc-client-dev libfreetype6-dev 
     && docker-php-ext-install imap \
     && docker-php-ext-install sodium \
     && pecl install mcrypt-1.0.1 \
-    && docker-php-ext-enable mcrypt
+    && docker-php-ext-enable mcrypt \
+    && docker-php-ext-install exif
+
 
 RUN a2enmod rewrite
 
