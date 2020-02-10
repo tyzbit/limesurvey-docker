@@ -10,6 +10,13 @@ This docker image is for Limesurvey on apache/php in its own container. It accep
 
 Volumes are specified for plugins and upload directories for persistence.
 
+# Tags
+
+-    latest - Tracks LimeSurvey latest stable release (https://www.limesurvey.org/stable-release)
+-    lts - Tracks LimeSurvey LTS release (https://www.limesurvey.org/lts-releases-download)
+-    development - Tracks LimeSurvey development release (https://www.limesurvey.org/development-release)
+
+
 # How to use this image
 
 ```console
