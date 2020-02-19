@@ -1,4 +1,4 @@
-FROM php:7.2-apache
+FROM php:7.3-apache
 
 ENV DOWNLOAD_URL https://www.limesurvey.org/lts-releases-download?download=2849:limesurvey3225%20200218targz
 ENV DOWNLOAD_SHA256 94682fbfc9838078d3a85badd3418ffb120cfd8d7ba176266f95305275f3e323
@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y libc-client-dev libfreetype6-dev libmcr
     && docker-php-ext-configure imap --with-imap-ssl --with-kerberos \
     && docker-php-ext-install imap \
     && docker-php-ext-install sodium \
-    && pecl install mcrypt-1.0.1 \
+    && pecl install mcrypt-1.0.3 \
     && docker-php-ext-enable mcrypt \
     && docker-php-ext-install exif
 
