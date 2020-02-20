@@ -96,6 +96,9 @@ EOPHP
 	if [ -n "$LIMESURVEY_USE_INNODB" ]; then
 		#If you want to use INNODB - remove MyISAM specification from LimeSurvey code
 		sed -i "/ENGINE=MyISAM/s/\(ENGINE=MyISAM \)//1" application/core/db/MysqlSchema.php
+        #Also set mysqlEngine in config file
+		sed -i "/\/\/ Update default LimeSurvey config here/s//'mysqlEngine'=>'InnoDB',/" application/config/config.php
+		DBENGINE='InnoDB'
     fi
 
 
