@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eu
 
+cd /var/www/html
+
 # usage: file_env VAR [DEFAULT]
 #    ie: file_env 'XYZ_DB_PASSWORD' 'example'
 # (will allow for "$XYZ_DB_PASSWORD_FILE" to fill in the value of
