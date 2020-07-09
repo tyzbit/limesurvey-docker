@@ -1,7 +1,7 @@
 FROM php:7.3-apache
 
-ENV DOWNLOAD_URL https://www.limesurvey.org/lts-releases-download?download=3065:limesurvey32224%20200630targz
-ENV DOWNLOAD_SHA256 4c3cb91855d1c740727532090faaac91833d85db5541d0ac7afddfedd70685bb
+ENV DOWNLOAD_URL https://download.limesurvey.org/lts-releases/limesurvey3.22.25+200706.zip
+ENV DOWNLOAD_SHA256 227f69db2f89278a68c91e2cc2fb86c8fe527280490f3b41dfcdc3a230187728
 
 # install the PHP extensions we need
 RUN apt-get update && apt-get install -y libc-client-dev libfreetype6-dev libmcrypt-dev libpng-dev libjpeg-dev libldap2-dev zlib1g-dev libkrb5-dev libtidy-dev libzip-dev libsodium-dev && rm -rf /var/lib/apt/lists/* \
