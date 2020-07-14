@@ -4,7 +4,7 @@ ENV DOWNLOAD_URL https://download.limesurvey.org/lts-releases/limesurvey3.22.25+
 ENV DOWNLOAD_SHA256 227f69db2f89278a68c91e2cc2fb86c8fe527280490f3b41dfcdc3a230187728
 
 # install the PHP extensions we need
-RUN apt-get update && apt-get install -y libc-client-dev libfreetype6-dev libmcrypt-dev libpng-dev libjpeg-dev libldap2-dev zlib1g-dev libkrb5-dev libtidy-dev libzip-dev libsodium-dev && rm -rf /var/lib/apt/lists/* \
+RUN apt-get update && apt-get install -y unzip libc-client-dev libfreetype6-dev libmcrypt-dev libpng-dev libjpeg-dev libldap2-dev zlib1g-dev libkrb5-dev libtidy-dev libzip-dev libsodium-dev && rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/  --with-png-dir=/usr --with-jpeg-dir=/usr \
 	&& docker-php-ext-install gd mysqli pdo pdo_mysql opcache zip iconv tidy \
     && docker-php-ext-configure ldap --with-libdir=lib/$(gcc -dumpmachine)/ \
@@ -30,10 +30,13 @@ RUN { \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 RUN set -x; \
-	curl -SL "$DOWNLOAD_URL" -o /tmp/lime.tar.gz; \
-    echo "$DOWNLOAD_SHA256 /tmp/lime.tar.gz" | sha256sum -c -; \
-    tar xf /tmp/lime.tar.gz --strip-components=1 -C /var/www/html; \
-    rm /tmp/lime.tar.gz; \
+    curl -SL "$DOWNLOAD_URL" -o /tmp/lime.zip; \
+    echo "$DOWNLOAD_SHA256 /tmp/lime.zip" | sha256sum -c -; \
+    unzip /tmp/lime.zip -d /tmp; \
+    mv /tmp/lime*/* /var/www/html/; \
+    mv /tmp/lime*/.[a-zA-Z]* /var/www/html/; \
+    rm /tmp/lime.zip; \
+    rmdir /tmp/lime*; \
     chown -R www-data:www-data /var/www/html
 
 #Set PHP defaults for Limesurvey (allow bigger uploads)
