@@ -62,7 +62,7 @@ EOPHP
     fi
 
 	# Install BaltimoreCyberTrustRoot.crt.pem
-	if [ ! -e BaltimoreCyberTrustRoot.crt.pem ]; then
+	if ! [ -e BaltimoreCyberTrustRoot.crt.pem ]; then
 		echo "Downloading BaltimoreCyberTrustroot.crt.pem"
 		if curl -o BaltimoreCyberTrustRoot.crt.pem -fsL "https://www.digicert.com/CACerts/BaltimoreCyberTrustRoot.crt.pem"; then
             echo "Downloaded successfully"
