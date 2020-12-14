@@ -1,11 +1,11 @@
-FROM php:7.3-apache
+FROM php:7.4-apache
 
-ENV DOWNLOAD_URL https://download.limesurvey.org/latest-stable-release/limesurvey4.3.30+201207.zip
-ENV DOWNLOAD_SHA256 02f5fafcd31412cb59c69031c66f2716695edb50f5aea7ed8de181b45abe5b4c
+ENV DOWNLOAD_URL https://download.limesurvey.org/latest-stable-release/limesurvey4.3.31+201214.zip
+ENV DOWNLOAD_SHA256 fa5cc7eb5f78c9a24e6cd4ffe5d42cd3ef20bf319375f5505a18c08c6b4a0994
 
 # install the PHP extensions we need
 RUN apt-get update && apt-get install -y unzip libc-client-dev libfreetype6-dev libmcrypt-dev libpng-dev libjpeg-dev libldap2-dev zlib1g-dev libkrb5-dev libtidy-dev libzip-dev libsodium-dev && rm -rf /var/lib/apt/lists/* \
-	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/  --with-png-dir=/usr --with-jpeg-dir=/usr \
+	&& docker-php-ext-configure gd --with-freetype=/usr/include/  --with-jpeg=/usr \
 	&& docker-php-ext-install gd mysqli pdo pdo_mysql opcache zip iconv tidy \
     && docker-php-ext-configure ldap --with-libdir=lib/$(gcc -dumpmachine)/ \
     && docker-php-ext-install ldap \
