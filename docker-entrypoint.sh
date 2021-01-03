@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eu
 
+cd /var/www/html
+
 # usage: file_env VAR [DEFAULT]
 #    ie: file_env 'XYZ_DB_PASSWORD' 'example'
 # (will allow for "$XYZ_DB_PASSWORD_FILE" to fill in the value of
@@ -60,9 +62,13 @@ EOPHP
     fi
 
 	# Install BaltimoreCyberTrustRoot.crt.pem
-	if [ ! -e BaltimoreCyberTrustRoot.crt.pem ]; then
+	if ! [ -e BaltimoreCyberTrustRoot.crt.pem ]; then
 		echo "Downloading BaltimoreCyberTrustroot.crt.pem"
-		curl -o BaltimoreCyberTrustRoot.crt.pem -fsL "https://dl.cacerts.digicert.com/BaltimoreCyberTrustRoot.crt.pem"
+		if curl -o BaltimoreCyberTrustRoot.crt.pem -fsL "https://www.digicert.com/CACerts/BaltimoreCyberTrustRoot.crt.pem"; then
+            echo "Downloaded successfully"
+        else
+            echo "Failed to download certificate - continuing anyway"
+        fi
     fi
 
     # see http://stackoverflow.com/a/2705678/433558
@@ -96,6 +102,9 @@ EOPHP
 	if [ -n "$LIMESURVEY_USE_INNODB" ]; then
 		#If you want to use INNODB - remove MyISAM specification from LimeSurvey code
 		sed -i "/ENGINE=MyISAM/s/\(ENGINE=MyISAM \)//1" application/core/db/MysqlSchema.php
+        #Also set mysqlEngine in config file
+		sed -i "/\/\/ Update default LimeSurvey config here/s//'mysqlEngine'=>'InnoDB',/" application/config/config.php
+		DBENGINE='InnoDB'
     fi
 
 
