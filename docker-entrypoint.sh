@@ -177,6 +177,9 @@ EOPHP
         php application/commands/console.php resetpassword "$LIMESURVEY_ADMIN_USER" "$LIMESURVEY_ADMIN_PASSWORD"
 	fi
 
+    #flush asssets (clear cache on restart)
+    php application/commands/console.php flushassets
+
 fi
 
 exec "$@"
