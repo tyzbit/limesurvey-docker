@@ -1,6 +1,26 @@
 LimeSurvey
 ==========
 
+#IMPORTANT NOTE for installations from 4.0.0 to 5.0.8 (fixed if you use a NEW install from 5.0.8.1 onwards) - POTENTIAL DATA LOSS
+
+If you are using a version of this container from 4.0.0 to 5.0.8 inclusive AND your users have encrypted any data within LimeSurvey - please ensure to make a backup of /var/www/html/application/config/security.php before updating your image.
+
+An example of how to do this is below, assuming the container name is 'some-limesurvey':
+
+```console
+$ docker cp some-limesurvey:/var/www/html/application/config/security.php /tmp/security.php
+```
+
+Then update to 5.0.8.1 or greater. You can then copy the security.php file back:
+
+```console
+$ docker cp /tmp/security.php some-limesurvey:/var/www/html/application/config/security.php 
+```
+
+5.0.8.1 or greater will persist the config directory.
+
+#END IMPORTANT NOTE
+
 LimeSurvey - the most popular
 Free Open Source Software survey tool on the web.
 
@@ -56,6 +76,17 @@ $ docker run --name some-limesurvey -e LIMESURVEY_DB_HOST=10.1.2.3:3306 \
     -e LIMESURVEY_DB_USER=... -e LIMESURVEY_DB_PASSWORD=... -d acspri/limesurvey
 ```
 
+## Volumes and Persistence 
+
+Since 5.0.8.1 there are now 3 volumes defined in the Dockerfile:
+
+1. /var/www/html/plugins
+  - Installed LimeSurvey plugins
+2. /var/www/html/upload
+  - New or created themes, Survey resources, Data from uploaded responses
+3. /var/www/html/application/config
+  - Configuration and security.php for encrypted responses
+
 ## ... via [`docker-compose`](https://github.com/docker/compose)
 
 Example `docker-compose.yml` for `limesurvey`:
@@ -75,6 +106,10 @@ services:
       LIMESURVEY_ADMIN_PASSWORD: password
       LIMESURVEY_ADMIN_NAME: Lime Administrator
       LIMESURVEY_ADMIN_EMAIL: lime@lime.lime
+   volumes:
+      - ./plugins:/var/www/html/plugins
+      - ./upload:/var/www/html/upload
+      - ./config:/var/www/html/application/config
 
   mysql:
     image: mariadb

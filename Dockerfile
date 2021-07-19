@@ -29,7 +29,6 @@ RUN { \
 		echo 'opcache.enable_cli=1'; \
 	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
-
 RUN set -x; \
     curl -SL "$DOWNLOAD_URL" -o /tmp/lime.zip; \
     echo "$DOWNLOAD_SHA256 /tmp/lime.zip" | sha256sum -c -; \
@@ -38,7 +37,13 @@ RUN set -x; \
     mv /tmp/lime*/.[a-zA-Z]* /var/www/html/; \
     rm /tmp/lime.zip; \
     rmdir /tmp/lime*; \
-    chown -R www-data:www-data /var/www/html
+    chown -R www-data:www-data /var/www/html; \
+    mkdir -p /var/lime/application/config; \
+    mkdir -p /var/lime/upload; \
+    mkdir -p /var/lime/plugins; \
+    cp -dpR /var/www/html/application/config/* /var/lime/application/config; \
+    cp -dpR /var/www/html/upload/* /var/lime/upload; \
+    cp -dpR /var/www/html/plugins/* /var/lime/plugins
 
 #Set PHP defaults for Limesurvey (allow bigger uploads)
 RUN { \
@@ -52,6 +57,10 @@ RUN { \
 
 VOLUME ["/var/www/html/plugins"]
 VOLUME ["/var/www/html/upload"]
+
+#ensure that the config is persisted especially for security.php
+VOLUME ["/var/www/html/application/config"]
+
 
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN ln -s usr/local/bin/docker-entrypoint.sh /entrypoint.sh # backwards compat

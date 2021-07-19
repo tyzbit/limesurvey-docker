@@ -53,6 +53,22 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 		exit 1
 	fi
 
+    if ! [ -e application/config/config-defaults.php ]; then
+        echo >&2 "No config-defaults.php file in $(pwd) Copying defaults..."
+        cp -dR /var/lime/application/config/* application/config
+    fi
+
+    if ! [ -e plugins/index.html ]; then
+        echo >&2 "No index.html file in plugins dir in $(pwd) Copying defaults..."
+        cp -dR /var/lime/plugins/* plugins
+    fi
+
+    if ! [ -e upload/index.html ]; then
+        echo >&2 "No index.html file upload dir in $(pwd) Copying defaults..."
+        cp -dR /var/lime/upload/* upload
+    fi
+
+
     if ! [ -e application/config/config.php ]; then
         echo >&2 "No config file in $(pwd) Copying default config file..."
 		#Copy default config file but also allow for the addition of attributes
@@ -109,6 +125,7 @@ EOPHP
 
 
     chown www-data:www-data -R tmp 
+    chown www-data:www-data -R plugins
     mkdir -p upload/surveys
     chown www-data:www-data -R upload 
     chown www-data:www-data -R application/config
