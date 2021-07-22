@@ -3,11 +3,12 @@ version: '2'
 services:
 
   limesurvey:
-    image: acspri/limesurvey:lts
+    image: acspri/limesurvey:3.27.8-lts
+    build: .
     ports:
       - 8082:80
     environment:
-      LIMESURVEY_DB_PASSWORD: example
+      LIMESURVEY_DB_PASSWORD: ex/a|mple
       LIMESURVEY_ADMIN_USER: admin
       LIMESURVEY_ADMIN_PASSWORD: password
       LIMESURVEY_ADMIN_NAME: Lime Administrator
@@ -16,10 +17,5 @@ services:
   mysql:
     image: mariadb
     environment:
-      MYSQL_ROOT_PASSWORD: example
-
-  mail:
-    image: djfarrelly/maildev
-    ports:
-      - "8081:80"
+      MYSQL_ROOT_PASSWORD: ex/a|mple
 

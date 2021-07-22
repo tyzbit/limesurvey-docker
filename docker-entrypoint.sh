@@ -84,7 +84,7 @@ EOPHP
     set_config() {
         key="$1"
         value="$2"
-        sed -i "/'$key'/s/>\(.*\)/>$value,/1"  application/config/config.php
+        sed -i "/'$key'/s>\(.*\)>$value,1"  application/config/config.php
     }
 
     set_config 'connectionString' "'mysql:host=$LIMESURVEY_DB_HOST;port=3306;dbname=$LIMESURVEY_DB_NAME;'"
