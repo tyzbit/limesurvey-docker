@@ -53,10 +53,8 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 		exit 1
 	fi
 
-    if ! [ -e application/config/config-defaults.php ]; then
-        echo >&2 "No config-defaults.php file in $(pwd) Copying defaults..."
-        cp -dR /var/lime/application/config/* application/config
-    fi
+    echo >&2 "Copying default container default config files into config volume..."
+    cp -dR /var/lime/application/config/* application/config
 
     if ! [ -e plugins/index.html ]; then
         echo >&2 "No index.html file in plugins dir in $(pwd) Copying defaults..."
@@ -67,7 +65,6 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
         echo >&2 "No index.html file upload dir in $(pwd) Copying defaults..."
         cp -dR /var/lime/upload/* upload
     fi
-
 
     if ! [ -e application/config/config.php ]; then
         echo >&2 "No config file in $(pwd) Copying default config file..."
@@ -100,7 +97,7 @@ EOPHP
     set_config() {
         key="$1"
         value="$2"
-        sed -i "/'$key'/s/>\(.*\)/>$value,/1"  application/config/config.php
+        sed -i "/'$key'/s>\(.*\)>$value,1"  application/config/config.php
     }
 
     set_config 'connectionString' "'mysql:host=$LIMESURVEY_DB_HOST;port=3306;dbname=$LIMESURVEY_DB_NAME;'"
