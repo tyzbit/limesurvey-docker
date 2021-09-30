@@ -106,7 +106,7 @@ services:
       LIMESURVEY_ADMIN_PASSWORD: password
       LIMESURVEY_ADMIN_NAME: Lime Administrator
       LIMESURVEY_ADMIN_EMAIL: lime@lime.lime
-   volumes:
+    volumes:
       - ./plugins:/var/www/html/plugins
       - ./upload:/var/www/html/upload
       - ./config:/var/www/html/application/config
