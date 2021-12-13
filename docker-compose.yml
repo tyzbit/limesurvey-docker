@@ -3,7 +3,7 @@ version: '2'
 services: 
 
   limesurvey:
-    image: acspri/limesurvey:5.2.5
+    image: acspri/limesurvey:5.2.6
     build: .
     ports:
       - 8082:80
