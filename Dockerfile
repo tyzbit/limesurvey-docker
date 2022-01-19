@@ -31,7 +31,7 @@ RUN { \
 
 RUN set -x; \
     curl -SL "$DOWNLOAD_URL" -o /tmp/lime.zip; \
-    echo "$DOWNLOAD_SHA256 /tmp/lime.zip" | sha256sum -c -; \
+    echo "$DOWNLOAD_SHA256 /tmp/lime.zip" | sha256sum -c - || exit 1; \
     unzip /tmp/lime.zip -d /tmp; \
     mv /tmp/lime*/* /var/www/html/; \
     mv /tmp/lime*/.[a-zA-Z]* /var/www/html/; \
