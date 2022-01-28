@@ -4,7 +4,7 @@ ENV DOWNLOAD_URL https://download.limesurvey.org/lts-releases/limesurvey3.27.33+
 ENV DOWNLOAD_SHA256 0097b0f8f488d4b67c3ab566af5c59690bf95f3fa17358eeb7946b0690fa0244
 
 # install the PHP extensions we need
-RUN apt-get update && apt-get install -y unzip libc-client-dev libfreetype6-dev libmcrypt-dev libpng-dev libjpeg-dev libldap2-dev zlib1g-dev libkrb5-dev libtidy-dev libzip-dev libsodium-dev && rm -rf /var/lib/apt/lists/* \
+RUN apt-get update && apt-get install -y unzip libc-client-dev libfreetype6-dev libmcrypt-dev libpng-dev libjpeg-dev libldap-common libldap2-dev zlib1g-dev libkrb5-dev libtidy-dev libzip-dev libsodium-dev && rm -rf /var/lib/apt/lists/* \
 	&& docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr \
 	&& docker-php-ext-install gd mysqli pdo pdo_mysql opcache zip iconv tidy \
     && docker-php-ext-configure ldap --with-libdir=lib/$(gcc -dumpmachine)/ \
