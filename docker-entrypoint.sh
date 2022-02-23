@@ -99,6 +99,18 @@ EOPHP
 		set_config 'attributes' "array(PDO::MYSQL_ATTR_SSL_CA => '\/var\/www\/html\/$MYSQL_SSL_CA', PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false)"
     fi
 
+    #Remove session line if exists
+    sed -i "/^'session'/d" application/config/config.php
+
+    if [ -n "$LIMESURVEY_USE_DB_SESSIONS" ]; then
+        #Add session line
+awk '/DbHttpSession/ && c == 0 { c = 1; system("cat") } { print }' application/config/config.php > application/config/config.tmp <<'EOPHP'
+'session' => array ('class' => 'application.core.web.DbHttpSession', 'connectionID' => 'db', 'sessionTableName' => '{{sessions}}', ),
+EOPHP
+       mv application/config/config.tmp application/config/config.php
+    fi
+
+
 	if [ -n "$LIMESURVEY_USE_INNODB" ]; then
 		#If you want to use INNODB - remove MyISAM specification from LimeSurvey code
 		sed -i "/ENGINE=MyISAM/s/\(ENGINE=MyISAM \)//1" application/core/db/MysqlSchema.php
