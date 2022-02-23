@@ -36,6 +36,7 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
     file_env 'LIMESURVEY_SQL_DEBUG' '0'
     file_env 'MYSQL_SSL_CA' ''
     file_env 'LIMESURVEY_USE_INNODB' ''
+    file_env 'LIMESURVEY_USE_DB_SESSIONS' ''
 
 	# if we're linked to MySQL and thus have credentials already, let's use them
 	file_env 'LIMESURVEY_DB_USER' "${MYSQL_ENV_MYSQL_USER:-root}"
