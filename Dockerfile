@@ -37,7 +37,17 @@ RUN set -x; \
     mv /tmp/lime*/.[a-zA-Z]* /var/www/html/; \
     rm /tmp/lime.zip; \
     rmdir /tmp/lime*; \
-    chown -R www-data:www-data /var/www/html
+    chown -R www-data:www-data /var/www/html \
+    mkdir -p /var/lime/application/config; \
+    mkdir -p /var/lime/upload; \
+    mkdir -p /var/lime/plugins; \
+    mkdir -p /var/lime/tmp; \
+    cp -dpR /var/www/html/application/config/* /var/lime/application/config; \
+    cp -dpR /var/www/html/upload/* /var/lime/upload; \
+    cp -dpR /var/www/html/tmp/* /var/lime/tmp; \
+    cp -dpR /var/www/html/plugins/* /var/lime/plugins
+
+
 
 #Set PHP defaults for Limesurvey (allow bigger uploads)
 RUN { \
