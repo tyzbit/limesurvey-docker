@@ -57,6 +57,7 @@ RUN { \
 		echo 'max_execution_time=120'; \
         echo 'max_input_vars=10000'; \
         echo 'date.timezone=UTC'; \
+        echo 'display_errors=off'; \
 	} > /usr/local/etc/php/conf.d/uploads.ini
 
 COPY docker-entrypoint.sh /usr/local/bin/
