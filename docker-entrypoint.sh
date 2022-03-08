@@ -54,6 +54,24 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 		exit 1
 	fi
 
+    echo >&2 "Copying default container default config files into config volume..."
+    cp -dR /var/lime/application/config/* /var/www/html/application/config
+
+    if ! [ -e /var/www/html/plugins/index.html ]; then
+        echo >&2 "No index.html file in plugins dir in $(pwd) Copying defaults..."
+        cp -dR /var/lime/plugins/* /var/www/html/plugins
+    fi
+
+    if ! [ -e /var/www/html/upload/index.html ]; then
+        echo >&2 "No index.html file upload dir in $(pwd) Copying defaults..."
+        cp -dR /var/lime/upload/* /var/www/html/upload
+    fi
+
+    if ! [ -e /var/www/html/tmp/index.html ]; then
+        echo >&2 "No index.html file tmp dir in $(pwd) Copying defaults..."
+        cp -dR /var/lime/tmp/* /var/www/html/tmp
+    fi
+
     if ! [ -e /var/www/html/application/config/config.php ]; then
         echo >&2 "No config file in $(pwd) Copying default config file..."
 		#Copy default config file but also allow for the addition of attributes
