@@ -49,9 +49,6 @@ RUN { \
         echo 'date.timezone=UTC'; \
 	} > /usr/local/etc/php/conf.d/uploads.ini
 
-VOLUME ["/var/www/html/plugins"]
-VOLUME ["/var/www/html/upload"]
-
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN ln -s usr/local/bin/docker-entrypoint.sh /entrypoint.sh # backwards compat
 

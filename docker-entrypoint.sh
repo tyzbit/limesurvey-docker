@@ -54,10 +54,10 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 		exit 1
 	fi
 
-    if ! [ -e application/config/config.php ]; then
+    if ! [ -e /var/www/html/application/config/config.php ]; then
         echo >&2 "No config file in $(pwd) Copying default config file..."
 		#Copy default config file but also allow for the addition of attributes
-awk '/lime_/ && c == 0 { c = 1; system("cat") } { print }' application/config/config-sample-mysql.php > application/config/config.php <<'EOPHP'
+awk '/lime_/ && c == 0 { c = 1; system("cat") } { print }' /var/www/html/application/config/config-sample-mysql.php > /var/www/html/application/config/config.php <<'EOPHP'
 'attributes' => array(),
 EOPHP
     fi
@@ -85,7 +85,7 @@ EOPHP
     set_config() {
         key="$1"
         value="$2"
-        sed -i "/'$key'/s>\(.*\)>$value,1"  application/config/config.php
+        sed -i "/'$key'/s>\(.*\)>$value,1"  /var/www/html/application/config/config.php
     }
 
     set_config 'connectionString' "'mysql:host=$LIMESURVEY_DB_HOST;port=3306;dbname=$LIMESURVEY_DB_NAME;'"
@@ -101,27 +101,27 @@ EOPHP
     fi
 
     #Remove session line if exists
-    sed -i "/^'session'/d" application/config/config.php
+    sed -i "/^'session'/d" /var/www/html/application/config/config.php
 
     if [ -n "$LIMESURVEY_USE_DB_SESSIONS" ]; then
         #Add session line
-awk '/DbHttpSession/ && c == 0 { c = 1; system("cat") } { print }' application/config/config.php > application/config/config.tmp <<'EOPHP'
+awk '/DbHttpSession/ && c == 0 { c = 1; system("cat") } { print }' /var/www/html/application/config/config.php > /var/www/html/application/config/config.tmp <<'EOPHP'
 'session' => array ('class' => 'application.core.web.DbHttpSession', 'connectionID' => 'db', 'sessionTableName' => '{{sessions}}', ),
 EOPHP
-       mv application/config/config.tmp application/config/config.php
+       mv /var/www/html/application/config/config.tmp /var/www/html/application/config/config.php
     fi
 
 
 	if [ -n "$LIMESURVEY_USE_INNODB" ]; then
 		#If you want to use INNODB - remove MyISAM specification from LimeSurvey code
-		sed -i "/ENGINE=MyISAM/s/\(ENGINE=MyISAM \)//1" application/core/db/MysqlSchema.php
+		sed -i "/ENGINE=MyISAM/s/\(ENGINE=MyISAM \)//1" /var/www/html/application/core/db/MysqlSchema.php
     fi
 
 
-    chown www-data:www-data -R tmp 
-    mkdir -p upload/surveys
-    chown www-data:www-data -R upload 
-    chown www-data:www-data -R application/config
+    chown www-data:www-data -R /var/www/html/tmp 
+    mkdir -p /var/www/html/upload/surveys
+    chown www-data:www-data -R /var/www/html/upload 
+    chown www-data:www-data -R /var/www/html/application/config
 
 	DBSTATUS=$(TERM=dumb php -- "$LIMESURVEY_DB_HOST" "$LIMESURVEY_DB_USER" "$LIMESURVEY_DB_PASSWORD" "$LIMESURVEY_DB_NAME" "$LIMESURVEY_TABLE_PREFIX" "$MYSQL_SSL_CA" <<'EOPHP'
 <?php
@@ -179,16 +179,16 @@ EOPHP
 
 	if [ "$DBSTATUS" != "DBEXISTS" ] &&  [ -n "$LIMESURVEY_ADMIN_USER" ] && [ -n "$LIMESURVEY_ADMIN_PASSWORD" ]; then
         echo >&2 'Database not yet populated - installing Limesurvey database'
-	    php application/commands/console.php install "$LIMESURVEY_ADMIN_USER" "$LIMESURVEY_ADMIN_PASSWORD" "$LIMESURVEY_ADMIN_NAME" "$LIMESURVEY_ADMIN_EMAIL" verbose
+	    php /var/www/html/application/commands/console.php install "$LIMESURVEY_ADMIN_USER" "$LIMESURVEY_ADMIN_PASSWORD" "$LIMESURVEY_ADMIN_NAME" "$LIMESURVEY_ADMIN_EMAIL" verbose
 	fi
 
 	if [ -n "$LIMESURVEY_ADMIN_USER" ] && [ -n "$LIMESURVEY_ADMIN_PASSWORD" ]; then
 		echo >&2 'Updating password for admin user'
-        php application/commands/console.php resetpassword "$LIMESURVEY_ADMIN_USER" "$LIMESURVEY_ADMIN_PASSWORD"
+        php /var/www/html/application/commands/console.php resetpassword "$LIMESURVEY_ADMIN_USER" "$LIMESURVEY_ADMIN_PASSWORD"
 	fi
 
     #flush asssets (clear cache on restart)
-    php application/commands/console.php flushassets
+    php /var/www/html/application/commands/console.php flushassets
 fi
 
 exec "$@"
