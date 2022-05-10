@@ -21,20 +21,12 @@ sed -i -e "s/LIME_SHA/$SHA256/g" Dockerfile
 
 rm $VERSION.zip
 
-docker pull php:8.0-apache
-
-docker-compose build
+docker buildx build --no-cache --push --platform linux/amd64,linux/arm64,linux/ppc64le,linux/mips64le,linux/arm/v7,linux/arm/v6,linux/s390x -t acspri/limesurvey:$VERSION -t acspri/limesurvey:latest .
 
 git add Dockerfile docker-compose.yml
 
 git commit -m "$VERSION release"
 
 git tag $VERSION
-
-docker tag acspri/limesurvey:$VERSION acspri/limesurvey:latest
-
-docker push acspri/limesurvey:$VERSION
-
-docker push acspri/limesurvey:latest
 
 git push --tags origin master
