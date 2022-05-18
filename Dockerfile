@@ -56,7 +56,7 @@ RUN { \
 	} > /usr/local/etc/php/conf.d/uploads.ini
 
 RUN apt update \
-&&  apt install strace
+&&  apt install -y strace
 
 VOLUME ["/var/www/html/plugins"]
 VOLUME ["/var/www/html/upload"]
