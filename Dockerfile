@@ -55,6 +55,9 @@ RUN { \
         echo 'date.timezone=UTC'; \
 	} > /usr/local/etc/php/conf.d/uploads.ini
 
+RUN apt update \
+&&  apt install strace
+
 VOLUME ["/var/www/html/plugins"]
 VOLUME ["/var/www/html/upload"]
 
