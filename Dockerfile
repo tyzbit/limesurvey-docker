@@ -56,7 +56,8 @@ RUN { \
 	} > /usr/local/etc/php/conf.d/uploads.ini
 
 RUN apt update \
-&&  apt install -y strace
+&&  apt install -y strace \
+    net-tools
 
 VOLUME ["/var/www/html/plugins"]
 VOLUME ["/var/www/html/upload"]
